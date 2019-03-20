@@ -14,7 +14,7 @@ class App {
     }
 
     private initializeMiddlewares() {
-
+        this.app.use(express.json());
     }
 
     private initializeRouters(routers: RouterClass[]) {

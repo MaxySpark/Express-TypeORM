@@ -1,35 +1,41 @@
 {
-  "name": "tsc-express-typeorm",
-  "version": "1.0.0",
-  "description": "Express App in Typescript with TypeORM",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MaxySpark/Express-TypeORM.git"
-  },
-  "keywords": [
-    "tsc",
-    "nodejs",
-    "express",
-    "typeorm"
-  ],
-  "author": "MaxySpark <me@maxyspark.me>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/MaxySpark/Express-TypeORM/issues"
-  },
-  "homepage": "https://github.com/MaxySpark/Express-TypeORM#readme",
-  "devDependencies": {
-    "@types/body-parser": "^1.17.0",
-    "@types/express": "^4.16.1",
-    "@types/node": "^11.11.3",
-    "typescript": "^3.3.3333"
-  },
-  "dependencies": {
-    "body-parser": "^1.18.3",
-    "express": "^4.16.4"
-  }
+   "name": "tsc-express-typeorm",
+   "version": "1.0.0",
+   "description": "Express App in Typescript with TypeORM",
+   "main": "index.js",
+   "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "start": "ts-node src/index.ts"
+   },
+   "repository": {
+      "type": "git",
+      "url": "git+https://github.com/MaxySpark/Express-TypeORM.git"
+   },
+   "keywords": [
+      "tsc",
+      "nodejs",
+      "express",
+      "typeorm"
+   ],
+   "author": "MaxySpark <me@maxyspark.me>",
+   "license": "MIT",
+   "bugs": {
+      "url": "https://github.com/MaxySpark/Express-TypeORM/issues"
+   },
+   "homepage": "https://github.com/MaxySpark/Express-TypeORM#readme",
+   "devDependencies": {
+      "@types/body-parser": "^1.17.0",
+      "@types/express": "^4.16.1",
+      "@types/node": "^8.0.29",
+      "typescript": "2.5.2",
+      "ts-node": "3.3.0"
+   },
+   "dependencies": {
+      "body-parser": "^1.18.3",
+      "dotenv": "^7.0.0",
+      "express": "^4.16.4",
+      "mysql": "^2.14.1",
+      "reflect-metadata": "^0.1.10",
+      "typeorm": "0.2.15"
+   }
 }
