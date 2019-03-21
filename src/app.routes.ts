@@ -1,7 +1,7 @@
 import RouterClass from "./interfaces/routes.interface";
 
-import UserRoutes from "./user/user.routes";
-import AuthRoutes from "./auth/auth.routes";
+import UserRoutes from "./controllers/user/user.routes";
+import AuthRoutes from "./controllers/auth/auth.routes";
 
 export const getRoutes = () => {
     const routers: RouterClass[] = [

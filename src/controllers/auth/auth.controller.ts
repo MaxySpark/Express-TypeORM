@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { Repository, getCustomRepository } from 'typeorm';
-import { User } from '../db/entities/User.entity';
+import { User } from '../../db/entities/User.entity';
 import { validate } from 'class-validator';
-import UserRepository from '../db/repositories/User.repository'
+import UserRepository from '../../db/repositories/User.repository'
 
 class AuthController {
     private repository: UserRepository;
