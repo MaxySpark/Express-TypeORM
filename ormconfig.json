@@ -1,15 +1,4 @@
 {
-   "synchronize": true,
-   "logging": true,
-   "entities": [
-      "dist/db/entity/*.js"
-   ],
-   "migrations": [
-      "dist/db/migration/*.js"
-   ],
-   "subscribers": [
-      "dist/db/subscriber/*.js"
-   ],
    "cli": {
       "entitiesDir": "src/db/entity",
       "migrationsDir": "src/db/migration",
