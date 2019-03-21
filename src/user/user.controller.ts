@@ -1,13 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
+import { getManager } from 'typeorm';
+import { User } from '../db/entity/User';
 
 class UserController {
 
     public getUser = async (req: Request, res: Response, next: NextFunction) => {
+        const entityManager = getManager();
+        const users = await entityManager.find(User)
         res.status(200).json({
-            users: [{
-                name: 'Bhargab',
-                ph: 1234567890
-            }]
+            users: users
         });
     }
 }

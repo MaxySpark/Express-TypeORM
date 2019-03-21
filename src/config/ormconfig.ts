@@ -3,12 +3,12 @@ import { ConnectionOptions } from 'typeorm';
 const ormconfig: ConnectionOptions = {
   type: 'mysql',
   host: process.env.MYSQL_HOST,
-  port: Number(process.env.PMYSQL_PORT),
-  username: process.env.PMYSQL_USER,
-  password: process.env.PMYSQL_PASSWORD,
-  database: process.env.PMYSQL_DB,
+  port: Number(process.env.MYSQL_PORT),
+  username: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DB,
   entities: [
-    __dirname + '/../dist/db/entity/*.js',
+    __dirname + '/../db/entity/*.js',
   ],
   synchronize: true,
 };
