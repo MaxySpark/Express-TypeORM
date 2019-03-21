@@ -2,7 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 import { Repository, getCustomRepository } from 'typeorm';
 import { User } from '../../db/entities/User.entity';
 import { validate } from 'class-validator';
+import { plainToClass } from 'class-transformer';
 import UserRepository from '../../db/repositories/User.repository'
+import { RegisterDto } from './auth.dto';
 
 class AuthController {
     private repository: UserRepository;
@@ -13,18 +15,21 @@ class AuthController {
 
     public registerUser = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const user = new User();
-            user.email = req.body.email;
-            user.firstName = req.body.firstname;
-            user.lastName = req.body.lastname;
-            user.username = req.body.username;
-            user.password = req.body.password;
-            user.active = req.body.active;
-            const errors = await validate(user);
+            const errors = await validate(plainToClass(RegisterDto, req.body));
             if (errors.length > 0) {
                 console.log(errors);
                 throw 400;
             }
+
+            const user = new User();
+            const userData: RegisterDto = req.body;
+
+            user.email = userData.email;
+            user.firstname = userData.firstname;
+            user.lastname = userData.lastname;
+            user.username = userData.username;
+            user.password = userData.password;  
+
             await this.repository.save(user);
 
             res.status(201).json({
