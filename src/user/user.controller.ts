@@ -1,12 +1,16 @@
 import { Request, Response, NextFunction } from 'express';
-import { getManager } from 'typeorm';
+import { getManager, getRepository, Repository, Connection } from 'typeorm';
 import { User } from '../db/entity/User';
 
 class UserController {
+    private repository: Repository<User>;
+ 
+    constructor() {
+        this.repository =  getRepository(User);
+    }
 
     public getUser = async (req: Request, res: Response, next: NextFunction) => {
-        const entityManager = getManager();
-        const users = await entityManager.find(User)
+        const users = await this.repository.find();
         res.status(200).json({
             users: users
         });

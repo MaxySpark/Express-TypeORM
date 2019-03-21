@@ -26,7 +26,7 @@ class App {
     public listen() {
         this.app.listen(this.port, (err: any) => {
             if (err) {
-                return console.error(err);
+                return console.error('Unable to Start the Server', err);
             }
             console.log('Server is running at port : ', this.port);
         });
