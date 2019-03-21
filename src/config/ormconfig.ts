@@ -8,7 +8,13 @@ const ormconfig: ConnectionOptions = {
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DB,
   entities: [
-    __dirname + '/../db/entity/*.entity.js',
+    __dirname + '/../db/entities/*.entity.js',
+  ],
+  subscribers: [
+    __dirname + '/../db/subscribers/*.subscriber.js',
+  ],
+  migrations: [
+    __dirname + '/../db/migrations/*.js',
   ],
   synchronize: true,
   logging: true,
