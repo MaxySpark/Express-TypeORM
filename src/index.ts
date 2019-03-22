@@ -2,7 +2,7 @@ import 'dotenv/config';
 import App from './App'
 import  { getRoutes }  from './app.routes';
 import { createConnection } from 'typeorm';
-import dbConncetionOptions from './config/orm.config';
+import dbConncetionOptions from './configs/orm.config';
 
 const port: number = Number(process.env.PORT) || 3000;
 
