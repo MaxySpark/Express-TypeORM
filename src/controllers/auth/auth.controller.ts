@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { Repository, getCustomRepository } from 'typeorm';
 import { User } from '../../db/entities/User.entity';
-import { validate } from 'class-validator';
-import { plainToClass } from 'class-transformer';
 import UserRepository from '../../db/repositories/User.repository'
 import { RegisterDto } from './auth.dto';
 
