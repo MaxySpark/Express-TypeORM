@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import AuthController from './auth.controller';
 import RouterClass from '../../interfaces/routes.interface';
+import validationMiddleware from '../../middlewares/dtovalidation.middleware';
+import { RegisterDto } from './auth.dto';
 
 class AuthRoutes implements RouterClass {
     public path: string;
@@ -12,7 +14,7 @@ class AuthRoutes implements RouterClass {
     }
 
     private initializeRoutes(controller: AuthController) {
-        this.router.post('/register', controller.registerUser);
+        this.router.post('/register', validationMiddleware(RegisterDto), controller.registerUser);
         this.router.post('/getactiveuser', controller.getActiveUser);
     }
 

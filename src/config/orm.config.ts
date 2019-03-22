@@ -1,6 +1,6 @@
 import { ConnectionOptions } from 'typeorm';
  
-const ormconfig: ConnectionOptions = {
+const dbConncetionOptions: ConnectionOptions = {
   type: 'mysql',
   host: process.env.MYSQL_HOST,
   port: Number(process.env.MYSQL_PORT),
@@ -20,4 +20,4 @@ const ormconfig: ConnectionOptions = {
   logging: true,
 };
  
-export default ormconfig;
+export default dbConncetionOptions;

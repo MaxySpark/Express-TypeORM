@@ -15,12 +15,6 @@ class AuthController {
 
     public registerUser = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const errors = await validate(plainToClass(RegisterDto, req.body));
-            if (errors.length > 0) {
-                console.log(errors);
-                throw 400;
-            }
-
             const user = new User();
             const userData: RegisterDto = req.body;
 
@@ -36,9 +30,7 @@ class AuthController {
                 user: user
             });
         } catch (error) {
-            if (error === 400) {
-                res.status(400).send('Bad Request');
-            }
+            next(error);
         }
 
     }

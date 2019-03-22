@@ -1,5 +1,6 @@
 import * as express from 'express';
 import RouterClass from './interfaces/routes.interface';
+import errorMiddleware from './middlewares/error.middleware';
 
 class App {
     public app: express.Application;
@@ -11,6 +12,7 @@ class App {
 
         this.initializeMiddlewares();
         this.initializeRouters(routers);
+        this.initialiseErrorHandler();
     }
 
     private initializeMiddlewares() {
@@ -21,6 +23,10 @@ class App {
         routers.forEach((router: RouterClass) => {
             this.app.use(router.path, router.router);
           });
+    }
+
+    private initialiseErrorHandler() {
+        this.app.use(errorMiddleware);
     }
 
     public listen() {
