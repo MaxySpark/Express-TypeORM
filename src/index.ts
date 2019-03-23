@@ -3,8 +3,7 @@ import App from './App'
 import  { getRoutes }  from './app.routes';
 import { createConnection } from 'typeorm';
 import dbConncetionOptions from './configs/orm.config';
-
-const port: number = Number(process.env.PORT) || 3000;
+import appconfig from './configs/app.config';
 
 (async () => {
     try {
@@ -15,7 +14,7 @@ const port: number = Number(process.env.PORT) || 3000;
     }
     const app = new App(
       getRoutes(),
-      port,
+      appconfig.APP_PORT,
     );
     app.listen();
 

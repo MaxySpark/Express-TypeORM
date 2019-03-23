@@ -15,7 +15,6 @@ class AuthRoutes implements RouterClass {
 
     private initializeRoutes(controller: AuthController) {
         this.router.post('/register', validationMiddleware(RegisterDto), controller.registerUser);
-        this.router.post('/getactiveuser', controller.getActiveUser);
     }
 
 }

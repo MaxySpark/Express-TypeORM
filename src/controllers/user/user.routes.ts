@@ -12,7 +12,7 @@ class UserRoutes implements RouterClass {
     }
 
     private initializeRoutes(controller: UserController) {
-        this.router.get('/getUsers', controller.getUser);
+        this.router.post('/getactiveuser', controller.getActiveUser);
     }
 
 }

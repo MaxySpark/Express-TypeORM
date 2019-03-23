@@ -1,19 +1,27 @@
 import { Request, Response, NextFunction } from 'express';
-import { getManager, getRepository, Repository, Connection } from 'typeorm';
+import { getCustomRepository } from 'typeorm';
 import { User } from '../../db/entities/User.entity';
+import UserRepository from '../../db/repositories/User.repository'
 
 class UserController {
-    private repository: Repository<User>;
+    private repository: UserRepository;
  
     constructor() {
-        this.repository =  getRepository(User);
+        this.repository = getCustomRepository(UserRepository);
     }
 
-    public getUser = async (req: Request, res: Response, next: NextFunction) => {
-        const users = await this.repository.find();
-        res.status(200).json({
-            users: users
-        });
+    public getActiveUser = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+
+            const activeUser = await this.repository.findActive(req.body.active);
+
+            res.status(201).json({
+                user: activeUser
+            });
+        } catch (error) {
+            next(error);
+        }
+
     }
 }
 
