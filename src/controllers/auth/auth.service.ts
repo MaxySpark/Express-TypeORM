@@ -2,10 +2,11 @@ import { getRepository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { User } from '../../db/entities/User.entity';
-import { RegisterDto } from './auth.dto';
+import { RegisterDto, LoginDto } from './auth.dto';
 import UserWithThatEmailExistException from '../../exceptions/UserWIthThatEmailExistExcepiton';
 import appconfig from '../../configs/app.config';
 import { DataStoredInToken } from '../../interfaces/jwt.interface';
+import LoginFailedException from '../../exceptions/LoginFailedException';
 
 class AuthService {
     private userRepository = getRepository(User);
@@ -20,11 +21,24 @@ class AuthService {
             ...userData,
             password : hashedPassword
         });
+        console.log(user);
         await this.userRepository.save(user);
         
         user.password = undefined;
 
         return this.createToken(user);
+    }
+
+    public async login(userData: LoginDto) {
+        const user = await this.userRepository.findOne({ email: userData.email });
+
+        const isMatchPassword = await bcrypt.compare(userData.password, user.password);
+
+        if (isMatchPassword) {
+            return this.createToken(user);
+        } else {
+            throw new LoginFailedException();
+        }
     }
 
     private createToken(user: User) {

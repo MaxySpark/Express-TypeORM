@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { RegisterDto } from './auth.dto';
+import { RegisterDto, LoginDto } from './auth.dto';
 import AuthService from './auth.service';
-import HttpException from '../../exceptions/HttpException';
+import ServerErrorException from '../../exceptions/ServerErrorException';
 
 class AuthController {
     private authService = new AuthService();
@@ -19,7 +19,23 @@ class AuthController {
             });
             
         } catch (error) {
-            next(new HttpException(500, 'Internal Server Error'));
+            next(new ServerErrorException());
+        }
+
+    }
+
+    public loginUser = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const userData: LoginDto = req.body;
+
+            const auth_token = await this.authService.login(userData);
+
+            return res.status(200).send({
+                AuthToken : auth_token
+            });
+            
+        } catch (error) {
+            next(new ServerErrorException());
         }
 
     }
