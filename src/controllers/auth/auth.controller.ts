@@ -13,11 +13,12 @@ class AuthController {
 
             const auth_token = await this.authService.register(userData);
 
-            res.status(201).json({
+            return res.status(201).send({
                 AuthToken : auth_token
             });
             
         } catch (error) {
+            console.log(error);
             next(error);
         }
 

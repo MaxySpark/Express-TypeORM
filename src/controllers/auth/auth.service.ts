@@ -40,8 +40,9 @@ class AuthService {
             expiresIn : '5h',
             algorithm : 'RS256' 
         }
-
-        return jwt.sign(dataStoredInToken, secret, signOptions);
+        const token = jwt.sign(dataStoredInToken, secret, signOptions);
+        console.log(token);
+        return token;
     }
 }
 
