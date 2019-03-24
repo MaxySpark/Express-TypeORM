@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { RegisterDto } from './auth.dto';
 import AuthService from './auth.service';
+import HttpException from '../../exceptions/HttpException';
 
 class AuthController {
     private authService = new AuthService();
@@ -18,8 +19,7 @@ class AuthController {
             });
             
         } catch (error) {
-            console.log(error);
-            next(error);
+            next(new HttpException(500, 'Internal Server Error'));
         }
 
     }

@@ -38,7 +38,7 @@ class AuthService {
         const signOptions: jwt.SignOptions = {
             issuer : 'MaxySpark',
             expiresIn : '5h',
-            algorithm : 'RS256' 
+            // algorithm : 'RS256' 
         }
         const token = jwt.sign(dataStoredInToken, secret, signOptions);
         console.log(token);
