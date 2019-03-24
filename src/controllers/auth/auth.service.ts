@@ -12,18 +12,16 @@ class AuthService {
     private userRepository = getRepository(User);
 
     public async register(userData: RegisterDto) {
-        if (await this.userRepository.findOne({ email: userData.email})) {
+        if (await this.userRepository.findOne({ email: userData.email })) {
             throw new UserWithThatEmailExistException(userData.email);
         }
 
         const hashedPassword = await bcrypt.hash(userData.password, 10);
         const user = this.userRepository.create({
             ...userData,
-            password : hashedPassword
+            password: hashedPassword
         });
-        console.log(user);
         await this.userRepository.save(user);
-        
         user.password = undefined;
 
         return this.createToken(user);
@@ -31,10 +29,12 @@ class AuthService {
 
     public async login(userData: LoginDto) {
         const user = await this.userRepository.findOne({ email: userData.email });
-
+        if (!user) {
+            throw new LoginFailedException();
+        }
         const isMatchPassword = await bcrypt.compare(userData.password, user.password);
 
-        if (isMatchPassword) {
+        if (await bcrypt.compare(userData.password, user.password)) {
             return this.createToken(user);
         } else {
             throw new LoginFailedException();
@@ -45,17 +45,16 @@ class AuthService {
         const secret = appconfig.JWT_SECRET;
 
         const dataStoredInToken: DataStoredInToken = {
-            id : user.id,
-            email : user.email
+            id: user.id,
+            email: user.email
         }
 
         const signOptions: jwt.SignOptions = {
-            issuer : 'MaxySpark',
-            expiresIn : '5h',
+            issuer: 'MaxySpark',
+            expiresIn: '5h',
             // algorithm : 'RS256' 
         }
         const token = jwt.sign(dataStoredInToken, secret, signOptions);
-        console.log(token);
         return token;
     }
 }

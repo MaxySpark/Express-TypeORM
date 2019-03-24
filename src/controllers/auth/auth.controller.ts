@@ -19,7 +19,7 @@ class AuthController {
             });
             
         } catch (error) {
-            next(new ServerErrorException());
+            next(error);
         }
 
     }
@@ -27,7 +27,6 @@ class AuthController {
     public loginUser = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const userData: LoginDto = req.body;
-
             const auth_token = await this.authService.login(userData);
 
             return res.status(200).send({
@@ -35,7 +34,8 @@ class AuthController {
             });
             
         } catch (error) {
-            next(new ServerErrorException());
+            console.log(error);
+            next(error);
         }
 
     }
