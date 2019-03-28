@@ -70,22 +70,27 @@ class AuthService {
                 idToken : userData.idToken,
                 audience : OauthConfig.google.clientId
             })
-            console.log(71,ticket);
             const payload = ticket.getPayload();
     
-    
             if (payload.aud === OauthConfig.google.clientId) {
-                const user = this.userRepository.create({
+                const user = await this.userRepository.findOne({ email: payload.email });
+                if (user) {
+                    return this.createToken(user);
+                }
+
+                const new_user = this.userRepository.create({
                     email : payload.email,
                     firstname : payload.given_name,
                     lastname : payload.family_name,
+                    username : payload.sub,
                     password : gp.generate({
                         length : 10,
                         numbers : true,
                         symbols : true
                     })
                 });
-                await this.userRepository.save(user);
+                
+                await this.userRepository.save(new_user);
                 user.password = undefined;
     
                 return this.createToken(user);
