@@ -1,12 +1,17 @@
 import { getRepository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
+import { OAuth2Client } from 'google-auth-library'
+import * as gp from 'generate-password'
+
 import { User } from '../../db/entities/User.entity';
-import { RegisterDto, LoginDto } from './auth.dto';
+import { RegisterDto, LoginDto, GoogleLoginDto } from './auth.dto';
 import UserWithThatEmailExistException from '../../exceptions/UserWIthThatEmailExistExcepiton';
 import appconfig from '../../configs/app.config';
 import { DataStoredInToken } from '../../interfaces/jwt.interface';
 import LoginFailedException from '../../exceptions/LoginFailedException';
+import { OauthConfig } from './../../configs/oauth.config';
+import GoogleLoginFailedException from '../../exceptions/GoogleLoginFailedException';
 
 class AuthService {
     private userRepository = getRepository(User);
@@ -57,6 +62,43 @@ class AuthService {
         const token = jwt.sign(dataStoredInToken, secret, signOptions);
         return token;
     }
+
+    public async googleOauth(userData: GoogleLoginDto) {
+        try {
+            const googleClient = new OAuth2Client(OauthConfig.google.clientId);
+            const ticket = await googleClient.verifyIdToken({
+                idToken : userData.idToken,
+                audience : OauthConfig.google.clientId
+            })
+            console.log(71,ticket);
+            const payload = ticket.getPayload();
+    
+    
+            if (payload.aud === OauthConfig.google.clientId) {
+                const user = this.userRepository.create({
+                    email : payload.email,
+                    firstname : payload.given_name,
+                    lastname : payload.family_name,
+                    password : gp.generate({
+                        length : 10,
+                        numbers : true,
+                        symbols : true
+                    })
+                });
+                await this.userRepository.save(user);
+                user.password = undefined;
+    
+                return this.createToken(user);
+            } else {
+                throw new GoogleLoginFailedException();
+            }
+        } catch(e) {
+            console.log(e);
+            throw new GoogleLoginFailedException();
+        }
+        
+    }
+
 }
 
 export default AuthService;
