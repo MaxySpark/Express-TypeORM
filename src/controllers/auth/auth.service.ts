@@ -21,11 +21,8 @@ class AuthService {
             throw new UserWithThatEmailExistException(userData.email);
         }
 
-        const hashedPassword = await bcrypt.hash(userData.password, 10);
-        const user = this.userRepository.create({
-            ...userData,
-            password: hashedPassword
-        });
+        const user = this.userRepository.create(userData);
+
         await this.userRepository.save(user);
         user.password = undefined;
 
@@ -37,8 +34,7 @@ class AuthService {
         if (!user) {
             throw new LoginFailedException();
         }
-        const isMatchPassword = await bcrypt.compare(userData.password, user.password);
-
+        
         if (await bcrypt.compare(userData.password, user.password)) {
             return this.createToken(user);
         } else {
@@ -87,13 +83,14 @@ class AuthService {
                         length : 10,
                         numbers : true,
                         symbols : true
-                    })
+                    }),
+                    active : true
                 });
                 
                 await this.userRepository.save(new_user);
-                user.password = undefined;
+                new_user.password = undefined;
     
-                return this.createToken(user);
+                return this.createToken(new_user);
             } else {
                 throw new GoogleLoginFailedException();
             }
