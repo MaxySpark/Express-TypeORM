@@ -31,3 +31,8 @@ export class LoginDto {
     @Length(6,20)
     password: string;
 }
+
+export class GoogleLoginDto {
+    @IsString()
+    idToken: string;
+}

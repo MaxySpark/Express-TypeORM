@@ -3,7 +3,7 @@ import App from './App'
 import  { getRoutes }  from './app.routes';
 import { createConnection } from 'typeorm';
 import dbConncetionOptions from './configs/orm.config';
-import appconfig from './configs/app.config';
+import AppConfig from './configs/app.config';
 
 (async () => {
     try {
@@ -14,7 +14,7 @@ import appconfig from './configs/app.config';
     }
     const app = new App(
       getRoutes(),
-      appconfig.APP_PORT,
+      AppConfig.APP_PORT,
     );
     app.listen();
 

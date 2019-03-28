@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { RegisterDto, LoginDto } from './auth.dto';
+import { RegisterDto, LoginDto, GoogleLoginDto } from './auth.dto';
 import AuthService from './auth.service';
 import ServerErrorException from '../../exceptions/ServerErrorException';
 
@@ -34,7 +34,21 @@ class AuthController {
             });
             
         } catch (error) {
-            console.log(error);
+            next(error);
+        }
+
+    }
+
+    public googleLogin = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const userData: GoogleLoginDto = req.body;
+            const auth_token = await this.authService.googleOauth(userData);
+
+            return res.status(200).send({
+                AuthToken : auth_token
+            });
+            
+        } catch (error) {
             next(error);
         }
 
