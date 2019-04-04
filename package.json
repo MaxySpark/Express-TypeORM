@@ -45,6 +45,7 @@
       "googleapis": "^39.0.0",
       "jsonwebtoken": "^8.5.1",
       "mysql": "^2.14.1",
+      "nodemailer": "^6.0.0",
       "reflect-metadata": "^0.1.10",
       "typeorm": "0.2.15"
    }
