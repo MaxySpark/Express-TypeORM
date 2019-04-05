@@ -10,7 +10,7 @@ import UserWithThatEmailExistException from '../../exceptions/UserWIthThatEmailE
 import appconfig from '../../configs/app.config';
 import { DataStoredInToken } from '../../interfaces/jwt.interface';
 import LoginFailedException from '../../exceptions/LoginFailedException';
-import { OauthConfig } from './../../configs/oauth.config';
+import OauthConfig from './../../configs/oauth.config';
 import GoogleLoginFailedException from '../../exceptions/GoogleLoginFailedException';
 
 class AuthService {
