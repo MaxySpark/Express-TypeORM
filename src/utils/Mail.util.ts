@@ -6,15 +6,14 @@ import { Options } from 'nodemailer/lib/mailer';
 import { getRepository } from 'typeorm';
 import { Mail as MailEntity } from '../db/entities/Mail.entity';
 
-class Mail {
+export class Mail {
     private mailRepository = getRepository(MailEntity);
     private oAuth2Client: OAuth2Client;
     private smtpTransport: nodemailer.Transporter;
-    public mailOptions: Options;
+    public mailOptions: Options = {};
 
     constructor() {
         this.initializeGoogleOauth2Client();
-        this.initializeSMTPConfiguration();
     }
 
     private initializeGoogleOauth2Client() {
@@ -27,12 +26,13 @@ class Mail {
         this.oAuth2Client.setCredentials({
             refresh_token: MailConfig.googleMailRefreshToken
         });
+        
     }
 
     private async initializeSMTPConfiguration() {
         try {
-            const refreshTokenResponse = await this.oAuth2Client.refreshAccessToken();
-            const accessToken = refreshTokenResponse.credentials.access_token
+            const refreshTokenResponse = await this.oAuth2Client.getAccessToken();
+            const accessToken = refreshTokenResponse.token;
 
             this.smtpTransport = nodemailer.createTransport({
                 service: 'gmail',
@@ -53,6 +53,7 @@ class Mail {
 
     public async send() {
         try {
+            await this.initializeSMTPConfiguration();
             const mail = await this.smtpTransport.sendMail(this.mailOptions);
             const new_mail = this.mailRepository.create({
                 messageId: mail.messageId,

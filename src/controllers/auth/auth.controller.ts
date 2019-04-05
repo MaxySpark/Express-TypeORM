@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { RegisterDto, LoginDto, GoogleLoginDto } from './auth.dto';
 import AuthService from './auth.service';
 import ServerErrorException from '../../exceptions/ServerErrorException';
+import { Mail } from '../../utils/Mail.util';
 
 class AuthController {
     private authService = new AuthService();
@@ -14,11 +15,19 @@ class AuthController {
 
             const auth_token = await this.authService.register(userData);
 
+            // mail demo
+            const mail = new Mail();
+            mail.mailOptions.to = userData.email;
+            mail.mailOptions.subject = 'Express TypeORM';
+            mail.mailOptions.text = 'Registration Successful';
+            mail.send();
+
             return res.status(201).send({
                 AuthToken : auth_token
             });
             
         } catch (error) {
+            console.log(error);
             next(error);
         }
 
