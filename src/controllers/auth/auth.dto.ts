@@ -36,3 +36,8 @@ export class GoogleLoginDto {
     @IsString()
     idToken: string;
 }
+
+export class FacebookLoginDto {
+    @IsString()
+    accessToken: string;
+}

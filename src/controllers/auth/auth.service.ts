@@ -5,7 +5,7 @@ import { OAuth2Client } from 'google-auth-library'
 import * as gp from 'generate-password'
 
 import { User } from '../../db/entities/User.entity';
-import { RegisterDto, LoginDto, GoogleLoginDto } from './auth.dto';
+import { RegisterDto, LoginDto, GoogleLoginDto, FacebookLoginDto } from './auth.dto';
 import UserWithThatEmailExistException from '../../exceptions/UserWIthThatEmailExistExcepiton';
 import appconfig from '../../configs/app.config';
 import { DataStoredInToken } from '../../interfaces/jwt.interface';
@@ -99,6 +99,10 @@ class AuthService {
             throw new GoogleLoginFailedException();
         }
         
+    }
+
+    public async facebookLogin(userData: FacebookLoginDto) {
+        // todo
     }
 
 }
