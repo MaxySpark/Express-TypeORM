@@ -3,6 +3,7 @@ import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library'
 import * as gp from 'generate-password'
+import * as rp from 'request-promise';
 
 import { User } from '../../db/entities/User.entity';
 import { RegisterDto, LoginDto, GoogleLoginDto, FacebookLoginDto } from './auth.dto';
@@ -12,6 +13,7 @@ import { DataStoredInToken } from '../../interfaces/jwt.interface';
 import LoginFailedException from '../../exceptions/LoginFailedException';
 import OauthConfig from './../../configs/oauth.config';
 import GoogleLoginFailedException from '../../exceptions/GoogleLoginFailedException';
+import { FbLoginResponse } from '../../interfaces/fbDataReponse.interface';
 
 class AuthService {
     private userRepository = getRepository(User);
@@ -102,7 +104,17 @@ class AuthService {
     }
 
     public async facebookLogin(userData: FacebookLoginDto) {
-        // todo
+        const options = {
+            uri: 'https://graph.facebook.com/me?fields=id,name,first_name,last_name,picture.width(1000).height(1000),email',
+            headers: {
+                'Authorization': 'Bearer ' + userData.accessToken
+            },
+            json: true
+        };
+        const fb_data: FbLoginResponse = await rp(options);
+
+        console.log(fb_data);
+        return fb_data.picture.data.url;
     }
 
 }

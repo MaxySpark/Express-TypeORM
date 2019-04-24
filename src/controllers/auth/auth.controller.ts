@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { RegisterDto, LoginDto, GoogleLoginDto } from './auth.dto';
+import { RegisterDto, LoginDto, GoogleLoginDto, FacebookLoginDto } from './auth.dto';
 import AuthService from './auth.service';
 import ServerErrorException from '../../exceptions/ServerErrorException';
 import { Mail } from '../../utils/Mail.util';
@@ -55,6 +55,21 @@ class AuthController {
 
             return res.status(200).send({
                 AuthToken : auth_token
+            });
+            
+        } catch (error) {
+            next(error);
+        }
+
+    }
+
+    public facebookLogin = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const userData: FacebookLoginDto = req.body;
+            const auth_token = await this.authService.facebookLogin(userData);
+
+            return res.status(200).send({
+                data : auth_token
             });
             
         } catch (error) {
