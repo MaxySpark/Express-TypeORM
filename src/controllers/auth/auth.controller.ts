@@ -69,7 +69,7 @@ class AuthController {
             const auth_token = await this.authService.facebookLogin(userData);
 
             return res.status(200).send({
-                data : auth_token
+                AuthToken : auth_token
             });
             
         } catch (error) {
