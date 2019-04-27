@@ -1,6 +1,8 @@
 import * as express from 'express';
 import RouterClass from './interfaces/routes.interface';
 import errorMiddleware from './middlewares/error.middleware';
+import * as morgan from 'morgan';
+import logger from './configs/winston.config';
 
 class App {
     public app: express.Application;
@@ -16,13 +18,20 @@ class App {
     }
 
     private initializeMiddlewares() {
+        this.app.use(morgan('combined', {
+            stream: {
+                write: (meta: any) => {
+                    logger.info(meta);
+                }
+            }
+        }));
         this.app.use(express.json());
     }
 
     private initializeRouters(routers: RouterClass[]) {
         routers.forEach((router: RouterClass) => {
             this.app.use(router.path, router.router);
-          });
+        });
     }
 
     private initialiseErrorHandler() {
