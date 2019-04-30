@@ -1,6 +1,6 @@
 import * as express from 'express';
-import RouterClass from './interfaces/routes.interface';
-import errorMiddleware from './middlewares/error.middleware';
+import { IRouter } from './interfaces/Router.interface';
+import errorHandlerMiddleware from './middlewares/ErrorHandler.middleware';
 import * as morgan from 'morgan';
 import logger from './configs/winston.config';
 
@@ -8,7 +8,7 @@ class App {
     public app: express.Application;
     public port: number;
 
-    constructor(routers: RouterClass[], port: number) {
+    constructor(routers: IRouter[], port: number) {
         this.app = express();
         this.port = port;
 
@@ -28,14 +28,14 @@ class App {
         this.app.use(express.json());
     }
 
-    private initializeRouters(routers: RouterClass[]) {
-        routers.forEach((router: RouterClass) => {
+    private initializeRouters(routers: IRouter[]) {
+        routers.forEach((router: IRouter) => {
             this.app.use(router.path, router.router);
         });
     }
 
     private initialiseErrorHandler() {
-        this.app.use(errorMiddleware);
+        this.app.use(errorHandlerMiddleware);
     }
 
     public listen() {

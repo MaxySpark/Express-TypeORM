@@ -1,7 +1,5 @@
 import { Router } from 'express';
-interface RouterClass {
+export interface IRouter {
     path: string;
     router: Router;
 }
-
-export default RouterClass;

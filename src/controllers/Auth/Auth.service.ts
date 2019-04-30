@@ -9,12 +9,13 @@ import { User } from '../../db/entities/User.entity';
 import { RegisterDto, LoginDto, GoogleLoginDto, FacebookLoginDto } from './auth.dto';
 import UserWithThatEmailExistException from '../../exceptions/UserWIthThatEmailExistExcepiton';
 import appconfig from '../../configs/app.config';
-import { DataStoredInToken } from '../../interfaces/jwt.interface';
+import { IJwtPayload } from '../../interfaces/JwtPayload.interface';
 import LoginFailedException from '../../exceptions/LoginFailedException';
 import OauthConfig from './../../configs/oauth.config';
 import GoogleLoginFailedException from '../../exceptions/GoogleLoginFailedException';
 import { FbLoginResponse } from '../../interfaces/fbDataReponse.interface';
 import FacebookLoginFailedException from '../../exceptions/FacebookLoginFailedException';
+import { JwtSignOptions } from '../../configs/jwt.config';
 
 class AuthService {
     private userRepository = getRepository(User);
@@ -48,7 +49,7 @@ class AuthService {
     private createToken(user: User) {
         const secret = appconfig.JWT_SECRET;
 
-        const dataStoredInToken: DataStoredInToken = {
+        const dataStoredInToken: IJwtPayload = {
             id: user.id,
             email: user.email
         }
@@ -58,7 +59,7 @@ class AuthService {
             expiresIn: '5h',
             // algorithm : 'RS256' 
         }
-        const token = jwt.sign(dataStoredInToken, secret, signOptions);
+        const token = jwt.sign(dataStoredInToken, secret, JwtSignOptions);
         return token;
     }
 

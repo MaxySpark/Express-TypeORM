@@ -3,7 +3,7 @@ import { validate, ValidationError } from 'class-validator';
 import{ RequestHandler } from 'express';
 import HttpException from '../exceptions/HttpException';
 
-function validationMiddleware<T>(type: any, skipMissingProperties = false): RequestHandler {
+function DtoValidationMiddleware<T>(type: any, skipMissingProperties = false): RequestHandler {
   return (req, res, next) => {
     validate(plainToClass(type, req.body), { skipMissingProperties })
       .then((errors: ValidationError[]) => {
@@ -18,4 +18,4 @@ function validationMiddleware<T>(type: any, skipMissingProperties = false): Requ
   };
 }
 
-export default validationMiddleware;
+export default DtoValidationMiddleware;

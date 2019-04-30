@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import AuthController from './auth.controller';
-import RouterClass from '../../interfaces/routes.interface';
+import { IRouter } from '../../interfaces/Router.interface';
 import validationMiddleware from '../../middlewares/dtovalidation.middleware';
 import { RegisterDto, LoginDto, GoogleLoginDto, FacebookLoginDto } from './auth.dto';
 
-class AuthRoutes implements RouterClass {
+class AuthRoutes implements IRouter {
     public path: string;
     public router: Router = Router();
     
