@@ -1,19 +1,19 @@
 import { getRepository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
-import { OAuth2Client } from 'google-auth-library'
-import * as gp from 'generate-password'
+import { OAuth2Client } from 'google-auth-library';
+import * as gp from 'generate-password';
 import * as rp from 'request-promise';
 
 import { User } from '../../db/entities/User.entity';
-import { RegisterDto, LoginDto, GoogleLoginDto, FacebookLoginDto } from './auth.dto';
+import { RegisterDto, LoginDto, GoogleLoginDto, FacebookLoginDto } from './Auth.dto';
 import UserWithThatEmailExistException from '../../exceptions/UserWIthThatEmailExistExcepiton';
 import appconfig from '../../configs/app.config';
 import { IJwtPayload } from '../../interfaces/JwtPayload.interface';
 import LoginFailedException from '../../exceptions/LoginFailedException';
 import OauthConfig from './../../configs/oauth.config';
 import GoogleLoginFailedException from '../../exceptions/GoogleLoginFailedException';
-import { FbLoginResponse } from '../../interfaces/fbDataReponse.interface';
+import { IFbLoginResponse } from '../../interfaces/FbDataReponse.interface';
 import FacebookLoginFailedException from '../../exceptions/FacebookLoginFailedException';
 import { JwtSignOptions } from '../../configs/jwt.config';
 
@@ -124,7 +124,7 @@ class AuthService {
             },
             json: true
         };
-        const fb_data: FbLoginResponse = await rp(options);
+        const fb_data: IFbLoginResponse = await rp(options);
 
         const user = await this.userRepository.findOne({ email: fb_data.email });
         if (user) {

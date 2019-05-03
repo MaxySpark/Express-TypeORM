@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { RegisterDto, LoginDto, GoogleLoginDto, FacebookLoginDto } from './auth.dto';
-import AuthService from './auth.service';
-import ServerErrorException from '../../exceptions/ServerErrorException';
+import { RegisterDto, LoginDto, GoogleLoginDto, FacebookLoginDto } from './Auth.dto';
+import AuthService from './Auth.service';
 import { Mail } from '../../utils/Mail.util';
 
 class AuthController {

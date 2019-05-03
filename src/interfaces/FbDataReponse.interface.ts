@@ -1,4 +1,4 @@
-export interface FbLoginResponse {
+export interface IFbLoginResponse {
     id: string;
     email: string;
     name: string;

@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import AuthController from './auth.controller';
+import AuthController from './Auth.controller';
 import { IRouter } from '../../interfaces/Router.interface';
-import validationMiddleware from '../../middlewares/dtovalidation.middleware';
-import { RegisterDto, LoginDto, GoogleLoginDto, FacebookLoginDto } from './auth.dto';
+import validationMiddleware from '../../middlewares/DtoValidation.middleware';
+import { RegisterDto, LoginDto, GoogleLoginDto, FacebookLoginDto } from './Auth.dto';
 
 class AuthRoutes implements IRouter {
     public path: string;
