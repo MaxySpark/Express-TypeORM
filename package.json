@@ -2,11 +2,12 @@
    "name": "tsc-express-typeorm",
    "version": "1.0.0",
    "description": "Express App in Typescript with TypeORM",
-   "main": "index.js",
+   "main": "dist/index.js",
    "scripts": {
       "test": "echo \"Error: no test specified\" && exit 1",
-      "start": "ts-node src/index.ts",
-      "server": "nodemon .\\dist\\index.js"
+      "start": "node dist/index.js",
+      "server": "nodemon dist/index.js",
+      "build": "tsc"
    },
    "repository": {
       "type": "git",
