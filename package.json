@@ -37,7 +37,7 @@
       "@types/request": "^2.48.1",
       "@types/request-promise": "^4.1.43",
       "ts-node": "3.3.0",
-      "typescript": "2.5.2"
+      "typescript": "3.4"
    },
    "dependencies": {
       "app-root-path": "^2.2.1",
