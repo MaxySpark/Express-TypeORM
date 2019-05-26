@@ -5,7 +5,7 @@
    "main": "dist/index.js",
    "scripts": {
       "test": "echo \"Error: no test specified\" && exit 1",
-      "start": "node dist/index.js",
+      "start": "npm run server",
       "server": "nodemon dist/index.js",
       "build": "tsc"
    },
@@ -51,6 +51,7 @@
       "google-auth-library": "^3.1.2",
       "googleapis": "^39.0.0",
       "jsonwebtoken": "^8.5.1",
+      "moment": "^2.24.0",
       "morgan": "^1.9.1",
       "mysql": "^2.14.1",
       "nodemailer": "^6.0.0",

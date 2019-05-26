@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { RegisterDto, LoginDto, GoogleLoginDto, FacebookLoginDto } from './Auth.dto';
+import { RegisterDto, LoginDto, GoogleLoginDto, FacebookLoginDto, ResetPasswordDto, CheckResetPasswordDto, SetNewPasswordDto } from './Auth.dto';
 import AuthService from './Auth.service';
 import { Mail } from '../../utils/Mail.util';
+import { responseWrapper } from '../../utils/ResponseWrapper.util';
 
 class AuthController {
     private authService = new AuthService();
@@ -21,8 +22,12 @@ class AuthController {
             mail.mailOptions.text = 'Registration Successful';
             mail.send();
 
-            return res.status(201).send({
-                AuthToken : auth_token
+            return responseWrapper(res, {
+                status: 201,
+                message: 'Registration Was Successful',
+                data: {
+                    AuthToken : auth_token
+                }
             });
             
         } catch (error) {
@@ -37,8 +42,11 @@ class AuthController {
             const userData: LoginDto = req.body;
             const auth_token = await this.authService.login(userData);
 
-            return res.status(200).send({
-                AuthToken : auth_token
+            return responseWrapper(res, {
+                message: 'Login Was Successful',
+                data: {
+                    AuthToken : auth_token
+                }
             });
             
         } catch (error) {
@@ -52,8 +60,11 @@ class AuthController {
             const userData: GoogleLoginDto = req.body;
             const auth_token = await this.authService.googleOauth(userData);
 
-            return res.status(200).send({
-                AuthToken : auth_token
+            return responseWrapper(res, {
+                message: 'Login Was Successful',
+                data: {
+                    AuthToken : auth_token
+                }
             });
             
         } catch (error) {
@@ -67,8 +78,58 @@ class AuthController {
             const userData: FacebookLoginDto = req.body;
             const auth_token = await this.authService.facebookLogin(userData);
 
-            return res.status(200).send({
-                AuthToken : auth_token
+            return responseWrapper(res, {
+                message: 'Login Was Successful',
+                data: {
+                    AuthToken : auth_token
+                }
+            });
+            
+        } catch (error) {
+            next(error);
+        }
+
+    }
+
+    public resetPassword = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const userData: ResetPasswordDto = req.body;
+            await this.authService.resetPassword(userData);
+
+            return responseWrapper(res, {
+                message: 'Password Reset Link Has Been Sent',
+            });
+            
+        } catch (error) {
+            next(error);
+        }
+
+    }
+
+    public checkResetPasswordRequest = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const userData: CheckResetPasswordDto = req.body;
+            const reset_data = await this.authService.checkResetPasswordRequest(userData);
+
+            return responseWrapper(res, {
+                message: 'Password Reset Link is Valid',
+                data: reset_data
+            });
+            
+        } catch (error) {
+            next(error);
+        }
+
+    }
+
+    public setNewPassword = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const userData: SetNewPasswordDto = req.body;
+            const reset_data = await this.authService.setnewPassword(userData);
+
+            return responseWrapper(res, {
+                message: 'Password Has Been Reset Successfully',
+                data: reset_data
             });
             
         } catch (error) {

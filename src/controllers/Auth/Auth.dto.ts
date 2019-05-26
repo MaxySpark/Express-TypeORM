@@ -1,4 +1,4 @@
-import { IsString, Length, IsBoolean, IsEmail } from 'class-validator';
+import { IsString, Length, IsEmail, IsUUID } from 'class-validator';
 
 export class RegisterDto {
 
@@ -40,4 +40,34 @@ export class GoogleLoginDto {
 export class FacebookLoginDto {
     @IsString()
     accessToken: string;
+}
+
+export class ResetPasswordDto {
+    @IsString()
+    email: string;
+}
+
+export class CheckResetPasswordDto {
+    @IsString()
+    email: string;
+
+    @IsUUID()
+    uuid: string;
+
+    @IsString()
+    resetKey: string;
+}
+
+export class SetNewPasswordDto {
+    @IsString()
+    email: string;
+
+    @IsUUID()
+    uuid: string;
+
+    @IsString()
+    resetKey: string;
+
+    @IsString()
+    password: string;
 }

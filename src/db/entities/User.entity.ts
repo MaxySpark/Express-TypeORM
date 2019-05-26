@@ -31,10 +31,16 @@ export class User {
     @Column()
     password: string;
 
+    @Column()
+    provider: string;
+
     @Column({
         default: false
     })
     active: boolean;
+
+    @Column()
+    activation_key: string;
 
     @CreateDateColumn()
     createdAt: Timestamp

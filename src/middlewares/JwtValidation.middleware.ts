@@ -4,7 +4,7 @@ import * as jwt from 'jsonwebtoken';
 import { JwtVerifyOptions } from "../configs/jwt.config";
 import AppConfig from "../configs/app.config";
 import { IRequest } from "../interfaces/Request.interface";
-import JwtVerificationFailedException from "../exceptions/JwtVerificationFailedException";
+import { JwtVerificationFailedException } from "../exceptions/Auth.exceptions";
 
 
 const JwtValidationMiddleware = (req: IRequest, res: Response, next: NextFunction) => {

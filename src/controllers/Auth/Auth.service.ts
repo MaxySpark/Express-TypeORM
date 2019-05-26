@@ -4,21 +4,22 @@ import * as jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
 import * as gp from 'generate-password';
 import * as rp from 'request-promise';
+import * as crypto from 'crypto';
+import * as moment from 'moment';
 
 import { User } from '../../db/entities/User.entity';
-import { RegisterDto, LoginDto, GoogleLoginDto, FacebookLoginDto } from './Auth.dto';
-import UserWithThatEmailExistException from '../../exceptions/UserWIthThatEmailExistExcepiton';
+import { RegisterDto, LoginDto, GoogleLoginDto, FacebookLoginDto, ResetPasswordDto, CheckResetPasswordDto, SetNewPasswordDto } from './Auth.dto';
 import appconfig from '../../configs/app.config';
 import { IJwtPayload } from '../../interfaces/JwtPayload.interface';
-import LoginFailedException from '../../exceptions/LoginFailedException';
 import OauthConfig from './../../configs/oauth.config';
-import GoogleLoginFailedException from '../../exceptions/GoogleLoginFailedException';
 import { IFbLoginResponse } from '../../interfaces/FbDataReponse.interface';
-import FacebookLoginFailedException from '../../exceptions/FacebookLoginFailedException';
 import { JwtSignOptions } from '../../configs/jwt.config';
+import { ResetPassword } from '../../db/entities/ResetPassword.entity';
+import { UserWithThatEmailExistException, LoginFailedException, GoogleLoginFailedException, FacebookLoginFailedException, UserWIthThatEmailDoesNotExistExcepiton, ResetPasswordLinkExpiredExcepiton } from '../../exceptions/Auth.exceptions';
 
 class AuthService {
     private userRepository = getRepository(User);
+    private resetPasswordRepository = getRepository(ResetPassword);
 
     public async register(userData: RegisterDto) {
         if (await this.userRepository.findOne({ email: userData.email })) {
@@ -26,8 +27,10 @@ class AuthService {
         }
 
         const user = this.userRepository.create(userData);
-
+        user.provider = 'local';
+        user.activation_key = crypto.randomBytes(20).toString('hex');
         await this.userRepository.save(user);
+        
         user.password = undefined;
 
         return this.createToken(user);
@@ -88,7 +91,8 @@ class AuthService {
                         numbers: true,
                         symbols: true
                     }),
-                    active: true
+                    active: true,
+                    provider: 'google'
                 });
 
                 await this.userRepository.save(new_user);
@@ -141,13 +145,95 @@ class AuthService {
                 numbers: true,
                 symbols: true
             }),
-            active: true
+            active: true,
+            provider: 'facebook'
         });
 
         await this.userRepository.save(new_user);
         new_user.password = undefined;
 
         return this.createToken(new_user);
+    }
+
+    // Password Reset Link Generate/Send Method
+    public async resetPassword(userData: ResetPasswordDto) {
+        const user = await this.userRepository.findOne({ email: userData.email });
+
+        if (!user) {
+            throw new UserWIthThatEmailDoesNotExistExcepiton(userData.email);
+        }
+
+        // last reset_key expire
+        const last_reset = await this.resetPasswordRepository.findOne({ email: user.email, expired: false });
+
+        if (last_reset) {
+            last_reset.expired = true;
+            await this.resetPasswordRepository.save(last_reset);
+        }
+
+        const reset_key = crypto.randomBytes(20).toString('hex');
+
+        // TODO reset link send mail
+
+        const resetPassObj = new ResetPassword();
+        resetPassObj.email = user.email;
+        resetPassObj.uuid = user.uuid;
+        resetPassObj.reset_key = reset_key;
+        await this.resetPasswordRepository.save(resetPassObj);
+    }
+
+    // Password Reset Link Validation Method
+    public async checkResetPasswordRequest(userData: CheckResetPasswordDto) {
+        const last_reset = await this.resetPasswordRepository.findOne({ email: userData.email, reset_key: userData.resetKey, expired: false });
+
+        if(!last_reset) {
+            throw new ResetPasswordLinkExpiredExcepiton();
+        }
+
+        const now = moment();
+        const reset_key_time = moment(+ last_reset.createdAt).add(24, 'hours');
+        const time_diff = reset_key_time.diff(now);
+        const expire_limit = 86400000; // 24 hours
+        // check if 24 hours+ && uuid match
+        if (last_reset.uuid === userData.uuid && time_diff > 0 && time_diff < expire_limit) {
+            return {
+                'email': last_reset.email,
+                'reset_key': last_reset.reset_key,
+                'isValid': true
+            };
+        } else {
+            last_reset.expired = true;
+            await this.resetPasswordRepository.save(last_reset);
+            throw new ResetPasswordLinkExpiredExcepiton();
+        }
+
+    }
+
+    // Set New Password Method
+    public async setnewPassword(userData: SetNewPasswordDto) {
+        const user = await this.userRepository.findOne({ email: userData.email, uuid: userData.uuid });
+
+        if (!user) {
+            throw new UserWIthThatEmailDoesNotExistExcepiton(userData.email);
+        }
+
+        const last_reset = await this.resetPasswordRepository.findOne({ email: userData.email, uuid: userData.uuid, reset_key: userData.resetKey, expired: false });
+
+        if(!last_reset) {
+            throw new ResetPasswordLinkExpiredExcepiton();
+        }
+        const hashedPassword = await bcrypt.hash(userData.password, 10);
+        user.password = hashedPassword;
+        await this.userRepository.save(user);
+
+        last_reset.reset = true;
+        last_reset.expired = true;
+        await this.resetPasswordRepository.save(last_reset);
+
+        return {
+            pass_update: true,
+            email: userData.email
+        }
     }
 
 }
