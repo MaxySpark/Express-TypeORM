@@ -16,7 +16,6 @@ import { IFbLoginResponse } from '../../interfaces/FbDataReponse.interface';
 import { JwtSignOptions } from '../../configs/jwt.config';
 import { ResetPassword } from '../../db/entities/ResetPassword.entity';
 import { UserWithThatEmailExistException, LoginFailedException, GoogleLoginFailedException, FacebookLoginFailedException, UserWIthThatEmailDoesNotExistExcepiton, ResetPasswordLinkExpiredExcepiton } from '../../exceptions/Auth.exceptions';
-import { Mail } from '../../utils/Mail.util';
 
 class AuthService {
     private userRepository = getRepository(User);
@@ -33,10 +32,6 @@ class AuthService {
         await this.userRepository.save(user);
         
         user.password = undefined;
-
-        const mail = new Mail();
-        mail.mailOptions.to = userData.email;
-        mail.send('register', { name: userData.firstname});
 
         return this.createToken(user);
     }

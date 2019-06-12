@@ -15,13 +15,10 @@ class AuthController {
 
             const auth_token = await this.authService.register(userData);
 
-            // mail demo
             const mail = new Mail();
             mail.mailOptions.to = userData.email;
-            mail.mailOptions.subject = 'Express TypeORM';
-            mail.mailOptions.text = 'Registration Successful';
-            mail.send();
-
+            mail.send('register', { name: userData.firstname});
+            
             return responseWrapper(res, {
                 status: 201,
                 message: 'Registration Was Successful',
