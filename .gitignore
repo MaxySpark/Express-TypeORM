@@ -5,5 +5,5 @@ dist/
 build/
 tmp/
 temp/
-.env
+.env*
 logs/*

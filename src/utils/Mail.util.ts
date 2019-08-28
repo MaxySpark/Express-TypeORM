@@ -17,7 +17,7 @@ export class Mail {
 
     constructor() {
         this.initializeGoogleOauth2Client();
-        this.mailOptions.from = 'Kaaljoy Production<' + process.env.GOOGLE_MAIL_USER_EMAIL + '>';
+        this.mailOptions.from = process.env.GOOGLE_MAIL_USER + '<' + process.env.GOOGLE_MAIL_USER_EMAIL + '>';
     }
 
     private initializeGoogleOauth2Client() {
