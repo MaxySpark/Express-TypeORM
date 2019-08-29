@@ -1,5 +1,5 @@
 import AuthService from './Auth.service';
-import { RegisterDto, LoginDto, ResetPasswordDto } from './Auth.dto';
+import { RegisterDto, LoginDto, ResetPasswordDto, CheckResetPasswordDto, SetNewPasswordDto } from './Auth.dto';
 import { getConnection, getConnectionManager, getRepository, Repository } from "typeorm";
 import { dbConncetionOptions } from '../../configs/orm.config';
 import { ResetPassword } from '../../db/entities/ResetPassword.entity';
@@ -85,19 +85,74 @@ describe('Auth Service', () => {
             email: 'test2@test.com'
         };
 
-        it('should send generate a reset password object', async () => {
-            await authService.resetPassword(user);
-            resetPassword = await resetPasswordRepository.findOne({email: user.email});
-            expect(resetPassword.email).toEqual('test@test.com');
+        describe('Generate Reset Password Link', () => {
+            it('should send generate a reset password object', async () => {
+                await authService.resetPassword(user);
+                resetPassword = await resetPasswordRepository.findOne({email: user.email});
+                expect(resetPassword.email).toEqual('test@test.com');
+            });
+    
+            it('should throw an error if user not exist with email', async () => {
+                try {
+                    await authService.resetPassword(user2);
+                } catch(e) {
+                    expect(e.status).toEqual(404);
+                    expect(e.message).toEqual(`User with email ${user2.email} does not exist`)
+                }
+            });
         });
 
-        it('should throw an error if user not exist with email', async () => {
-            try {
-                await authService.resetPassword(user2);
-            } catch(e) {
-                expect(e.status).toEqual(404);
-                expect(e.message).toEqual(`User with email ${user2.email} does not exist`)
-            }
+        describe('Check Reset Password Link', () => {
+            it('should return valid if link is not expired and valid', async () => {
+                const rUser =  await resetPasswordRepository.findOne({email: user.email});
+                const userData: CheckResetPasswordDto = {
+                    email: user.email,
+                    uuid: rUser.uuid,
+                    resetKey: rUser.reset_key
+                };
+                const resetData = await authService.checkResetPasswordRequest(userData);
+
+                expect(resetData).toEqual({
+                    email: userData.email,
+                    reset_key: userData.resetKey,
+                    isValid: true
+                });
+            });
         });
+
+        describe('Set New Password', () => {
+            
+            it('should set new password', async () => {
+                const rUser =  await resetPasswordRepository.findOne({email: user.email});
+                const userData: SetNewPasswordDto = {
+                    email: user.email,
+                    uuid: rUser.uuid,
+                    resetKey: rUser.reset_key,
+                    password: 'newpassword'
+                }
+                const setNewPassReturnData = await authService.setnewPassword(userData);
+
+                expect(setNewPassReturnData).toEqual({
+                    pass_update: true,
+                    email: user.email
+                });
+            });
+
+            it('should throw an error if user not exist with email', async () => {
+                const userData2: SetNewPasswordDto = {
+                    email: 'test2@email.com',
+                    uuid: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+                    resetKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+                    password: 'newpassword'
+                }
+                try {
+                    await authService.setnewPassword(userData2);
+                } catch(e) {
+                    expect(e.status).toEqual(404);
+                    expect(e.message).toEqual(`User with email ${userData2.email} does not exist`)
+                }
+            });
+        });
+        
     });
 });
