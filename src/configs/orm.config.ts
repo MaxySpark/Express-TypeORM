@@ -1,6 +1,6 @@
 import { ConnectionOptions } from 'typeorm';
 
-const dbConncetionOptions: ConnectionOptions = {
+export const dbConncetionOptions: ConnectionOptions = {
 	type: 'mysql',
 	host: process.env.DB_HOST,
 	port: Number(process.env.DB_PORT),
@@ -16,8 +16,8 @@ const dbConncetionOptions: ConnectionOptions = {
 	migrations: [
 		__dirname + '/../db/migrations/*{.js,.ts}',
 	],
-	synchronize: true,
-	logging: true,
+	synchronize: false,
+	logging: (process.env.NODE_ENV === 'test') ? false : true,
+	dropSchema: (process.env.NODE_ENV === 'test') ? true : false,
+	migrationsRun: true
 };
-
-export default dbConncetionOptions;
