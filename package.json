@@ -83,7 +83,7 @@
       "multer-s3": "^2.9.0",
       "mysql": "^2.14.1",
       "nodemailer": "^6.0.0",
-      "pug": "^2.0.3",
+      "pug": "^3.0.1",
       "reflect-metadata": "^0.1.10",
       "request": "^2.88.0",
       "request-promise": "^4.2.4",
