@@ -87,7 +87,7 @@
       "reflect-metadata": "^0.1.10",
       "request": "^2.88.0",
       "request-promise": "^4.2.4",
-      "typeorm": "0.2.15",
+      "typeorm": "0.2.25",
       "winston": "^3.2.1"
    }
 }
